@@ -59,32 +59,15 @@ int main()
     }
     max_steps[dir] = max(max_steps[dir], steps);
     char symbol = matrix.at(y).at(x);
+    unordered_map<char, vector<pair<int, int>>> offsets = {
+        {'|', {{0, -1}, {0, 1}}},
+        {'-', {{1, 0}, {-1, 0}}},
+        {'L', {{0, -1}, {1, 0}}},
+        {'J', {{0, -1}, {-1, 0}}},
+        {'7', {{0, 1}, {-1, 0}}},
+        {'F', {{0, 1}, {1, 0}}}};
     switch (symbol)
     {
-    case '|':
-      insert(q, dir, steps, {x, y}, from, {x, y - 1});
-      insert(q, dir, steps, {x, y}, from, {x, y + 1});
-      break;
-    case '-':
-      insert(q, dir, steps, {x, y}, from, {x + 1, y});
-      insert(q, dir, steps, {x, y}, from, {x - 1, y});
-      break;
-    case 'L':
-      insert(q, dir, steps, {x, y}, from, {x, y - 1});
-      insert(q, dir, steps, {x, y}, from, {x + 1, y});
-      break;
-    case 'J':
-      insert(q, dir, steps, {x, y}, from, {x, y - 1});
-      insert(q, dir, steps, {x, y}, from, {x - 1, y});
-      break;
-    case '7':
-      insert(q, dir, steps, {x, y}, from, {x, y + 1});
-      insert(q, dir, steps, {x, y}, from, {x - 1, y});
-      break;
-    case 'F':
-      insert(q, dir, steps, {x, y}, from, {x, y + 1});
-      insert(q, dir, steps, {x, y}, from, {x + 1, y});
-      break;
     case '.':
       break;
     case 'S':
@@ -94,6 +77,12 @@ int main()
         q.push({1, steps + 1, {x, y}, {x - 1, y}});
         q.push({2, steps + 1, {x, y}, {x, y + 1}});
         q.push({3, steps + 1, {x, y}, {x, y - 1}});
+      }
+      break;
+    default:
+      for (auto [offset_x, offset_y] : offsets[symbol])
+      {
+        insert(q, dir, steps, {x, y}, from, {x + offset_x, y + offset_y});
       }
       break;
     }
